@@ -1,0 +1,7 @@
+Flask
+Flask_SQLAlchemy
+PyMySQL
+Werkzeug
+ultralytics
+opencv-python
+numpy

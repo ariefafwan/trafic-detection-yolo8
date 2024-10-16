@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Tren Traffic Detection
+{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Tren Deteksi Kemacetan</h1>
+
+    <!-- Form Filter Lokasi -->
+    <form method="GET" action="{{ url_for('trends') }}" class="mb-4">
+        <div class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="location" class="col-form-label">Pilih Lokasi:</label>
+            </div>
+            <div class="col-auto">
+                <select name="location" class="form-select" required>
+                    <option value="" disabled {% if not selected_location %}selected{% endif %}>Semua Lokasi</option>
+                    {% for loc in locations %}
+                        <option value="{{ loc }}" {% if selected_location == loc %}selected{% endif %}>{{ loc }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Contoh Tampilan Tren: Rata-rata Motor dan Mobil per Upload -->
+    <canvas id="motorTrendsChart" width="400" height="200"></canvas>
+    <canvas id="carTrendsChart" width="400" height="200"></canvas>
+    <canvas id="totalObjectsTrendsChart" width="400" height="200"></canvas>
+
+    <!-- Menggunakan Chart.js untuk Visualisasi -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Data untuk Rata-rata Motorcycle
+        const ctxMotor = document.getElementById('motorTrendsChart').getContext('2d');
+        const motorTrendsChart = new Chart(ctxMotor, {
+            type: 'line',
+            data: {
+                labels: {{ labels|tojson }},
+                datasets: [{
+                    label: 'Rata-rata Motorcycle',
+                    data: {{ mean_motorcycle|tojson }},
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Data untuk Rata-rata Car
+        const ctxCar = document.getElementById('carTrendsChart').getContext('2d');
+        const carTrendsChart = new Chart(ctxCar, {
+            type: 'line',
+            data: {
+                labels: {{ labels|tojson }},
+                datasets: [{
+                    label: 'Rata-rata Car',
+                    data: {{ mean_car|tojson }},
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Data untuk Rata-rata Total Objek dalam Kotak
+        const ctxTotal = document.getElementById('totalObjectsTrendsChart').getContext('2d');
+        const totalObjectsTrendsChart = new Chart(ctxTotal, {
+            type: 'line',
+            data: {
+                labels: {{ labels|tojson }},
+                datasets: [{
+                    label: 'Rata-rata Total Objek dalam Kotak',
+                    data: {{ mean_total_objects_in_box|tojson }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %} {% block title %} Traffic Detection {% endblock %} {% block content %}
+<h1 class="mb-4">Traffic Detection</h1>
+
+<!-- Form Upload Video -->
+<form method="POST" enctype="multipart/form-data" class="mb-5">
+  <div class="mb-3">
+    <label for="video" class="form-label">Upload Video:</label>
+    <input type="file" name="video" accept="video/*" class="form-control" required />
+  </div>
+
+  <div class="mb-3">
+    <label for="date" class="form-label">Tanggal:</label>
+    <input type="date" name="date" class="form-control" required />
+  </div>
+
+  <div class="mb-3">
+    <label for="time" class="form-label">Waktu:</label>
+    <input type="time" name="time" class="form-control" required />
+  </div>
+
+  <div class="mb-3">
+    <label for="location" class="form-label">Lokasi:</label>
+    <select name="location" class="form-select" required>
+      <option value="" disabled selected>Pilih Lokasi</option>
+      <option value="Pasar Banyumanik">Pasar Banyumanik</option>
+      <option value="Kali Banteng">Kali Banteng</option>
+      <option value="Tugu Muda 3">Tugu Muda 3</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Proses Video</button>
+</form>
+
+<!-- Menampilkan Daftar Hasil Deteksi Terbaru -->
+{% if results %}
+<h2>Hasil Deteksi Terbaru</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Tanggal & Waktu Upload</th>
+      <th>Lokasi</th>
+      <th>Rata-rata Motorcycle</th>
+      <th>Rata-rata Car</th>
+      <th>Rata-rata Total Objek dalam Kotak</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for result in results %}
+    <tr>
+      <td>{{ result.id }}</td>
+      <td>{{ result.upload_datetime.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ result.location }}</td>
+      <td>{{ result.mean_motorcycle }}</td>
+      <td>{{ result.mean_car }}</td>
+      <td>{{ result.mean_total_objects_in_box }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %} {% endblock %}
